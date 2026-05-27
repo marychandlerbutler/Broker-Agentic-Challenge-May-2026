@@ -1,12 +1,12 @@
 import os
 import json
+import time
 import queue
 import uuid
 import threading
 from pathlib import Path
 from flask import Flask, render_template, request, jsonify, Response
 from dotenv import load_dotenv
-from agent.policy_extractor import PolicyExtractor
 
 load_dotenv()
 
@@ -32,110 +32,220 @@ def _push(session_id: str, event: dict):
     _get_queue(session_id).put(event)
 
 
-def _run_extraction(session_id: str, filepath: str):
-    extractor = PolicyExtractor()
-    try:
-        _push(session_id, {"type": "status", "phase": "reading", "message": "Reading PDF document..."})
+# ─────────────────────────────────────────────────────────────
+# Demo data — used when no ANTHROPIC_API_KEY is configured.
+# Riverside Manufacturing LLC, a fictional Commercial Property risk.
+# ─────────────────────────────────────────────────────────────
+DEMO_POLICY = {
+    "named_insured": {
+        "name": "Riverside Manufacturing LLC",
+        "dba": "Riverside Mfg.",
+        "entity_type": "Limited Liability Company",
+        "fein": "31-4872910",
+        "address": {
+            "street": "4821 Industrial Parkway",
+            "city": "Columbus",
+            "state": "OH",
+            "zip": "43215",
+        },
+        "phone": "(614) 555-0192",
+        "email": "operations@riversidemfg.com",
+    },
+    "policy": {
+        "policy_number": "CPP-2094-887231",
+        "carrier": "Travelers Insurance",
+        "naic_code": "25658",
+        "program": "Middle Market Commercial",
+        "effective_date": "06/01/2025",
+        "expiration_date": "06/01/2026",
+        "policy_type": "Commercial Property",
+        "form_type": "CP 00 10 — Building and Personal Property",
+        "causes_of_loss_form": "Special Form",
+        "description_of_operations": "Metal fabrication and assembly manufacturing",
+    },
+    "coverages": {
+        "building_limit": "$3,200,000",
+        "bpp_limit": "$850,000",
+        "bi_limit": "$500,000",
+        "extra_expense_limit": "$500,000",
+        "deductible": "$10,000",
+        "wind_hail_deductible": "$25,000",
+        "flood_coverage": "Not Included",
+        "earthquake_coverage": "Not Included",
+        "coinsurance": "80%",
+        "replacement_cost": "Yes",
+        "agreed_value": "No",
+        "ordinance_or_law": "Yes — 25%",
+        "equipment_breakdown": "Yes — $1,000,000",
+    },
+    "locations": [
+        {
+            "location_number": "1",
+            "address": "4821 Industrial Parkway, Columbus, OH 43215",
+            "building_value": "$3,200,000",
+            "bpp_value": "$850,000",
+            "year_built": "1998",
+            "construction_type": "Joisted Masonry",
+            "occupancy": "Manufacturing",
+            "square_footage": "62,500",
+            "num_stories": "1",
+        },
+    ],
+    "premium": {
+        "total_premium": "$48,750",
+        "building_premium": "$32,400",
+        "bpp_premium": "$8,200",
+        "bi_premium": "$5,800",
+        "taxes": "$1,250",
+        "fees": "$1,100",
+        "minimum_earned_premium": "$12,187",
+        "payment_plan": "Quarterly",
+    },
+    "agent": {
+        "name": "Mary Butler",
+        "agency": "Acme Insurance Agency",
+        "address": "100 Broker Plaza, Cincinnati, OH 45202",
+        "phone": "(513) 555-0177",
+        "email": "mary.butler@acmeinsurance.com",
+        "license_number": "OH-87245932",
+    },
+    "mortgagee": {
+        "name": "Huntington National Bank",
+        "loan_number": "HNB-2019-114882",
+        "address": "41 S High St, Columbus, OH 43215",
+    },
+}
 
-        _push(session_id, {"type": "status", "phase": "extracting", "message": "Sending to Claude AI for analysis..."})
 
-        policy_data = extractor.extract(filepath)
+FIELD_ORDER = [
+    # ── Account tab (Named Insured) ──
+    ("named_insured", "name", "Named Insured"),
+    ("named_insured", "dba", "DBA"),
+    ("named_insured", "entity_type", "Entity Type"),
+    ("named_insured", "fein", "FEIN"),
+    ("named_insured__address", "street", "Street Address"),
+    ("named_insured__address", "city", "City"),
+    ("named_insured__address", "state", "State"),
+    ("named_insured__address", "zip", "ZIP Code"),
+    ("named_insured", "phone", "Phone"),
+    ("named_insured", "email", "Email"),
+    # ── Policy tab ──
+    ("policy", "policy_number", "Policy Number"),
+    ("policy", "carrier", "Insurance Carrier"),
+    ("policy", "naic_code", "NAIC Code"),
+    ("policy", "effective_date", "Effective Date"),
+    ("policy", "expiration_date", "Expiration Date"),
+    ("policy", "form_type", "Form Type"),
+    ("policy", "causes_of_loss_form", "Causes of Loss"),
+    ("policy", "description_of_operations", "Description of Operations"),
+    ("policy", "program", "Program"),
+    # ── Coverages tab ──
+    ("coverages", "building_limit", "Building Limit"),
+    ("coverages", "bpp_limit", "Business Personal Property"),
+    ("coverages", "bi_limit", "Business Income"),
+    ("coverages", "extra_expense_limit", "Extra Expense"),
+    ("coverages", "deductible", "Deductible"),
+    ("coverages", "wind_hail_deductible", "Wind/Hail Deductible"),
+    ("coverages", "coinsurance", "Coinsurance"),
+    ("coverages", "replacement_cost", "Replacement Cost"),
+    ("coverages", "agreed_value", "Agreed Value"),
+    ("coverages", "flood_coverage", "Flood Coverage"),
+    ("coverages", "earthquake_coverage", "Earthquake Coverage"),
+    # ── Additional Coverages (still on Coverages tab) ──
+    ("coverages", "ordinance_or_law", "Ordinance or Law"),
+    ("coverages", "equipment_breakdown", "Equipment Breakdown"),
+    # ── Premium tab ──
+    ("premium", "total_premium", "Total Premium"),
+    ("premium", "building_premium", "Building Premium"),
+    ("premium", "bpp_premium", "BPP Premium"),
+    ("premium", "bi_premium", "BI Premium"),
+    ("premium", "taxes", "Taxes"),
+    ("premium", "fees", "Fees & Surcharges"),
+    ("premium", "minimum_earned_premium", "Min. Earned Premium"),
+    ("premium", "payment_plan", "Payment Plan"),
+    # ── Agent / Mortgagee tab ──
+    ("agent", "name", "Agent Name"),
+    ("agent", "agency", "Agency"),
+    ("agent", "phone", "Agent Phone"),
+    ("agent", "email", "Agent Email"),
+    ("agent", "license_number", "License Number"),
+    ("mortgagee", "name", "Mortgagee / Lienholder"),
+    ("mortgagee", "loan_number", "Loan Number"),
+    ("mortgagee", "address", "Mortgagee Address"),
+]
 
-        _push(session_id, {"type": "status", "phase": "populating", "message": "Populating AMS fields..."})
 
-        # Stream fields one by one so the UI can animate them
-        field_order = [
-            # Policy section
-            ("policy", "policy_number", "Policy Number"),
-            ("policy", "carrier", "Insurance Carrier"),
-            ("policy", "naic_code", "NAIC Code"),
-            ("policy", "effective_date", "Effective Date"),
-            ("policy", "expiration_date", "Expiration Date"),
-            ("policy", "form_type", "Form Type"),
-            ("policy", "causes_of_loss_form", "Causes of Loss"),
-            ("policy", "description_of_operations", "Description of Operations"),
-            ("policy", "program", "Program"),
-            # Insured section
-            ("named_insured", "name", "Named Insured"),
-            ("named_insured", "dba", "DBA"),
-            ("named_insured", "entity_type", "Entity Type"),
-            ("named_insured__address", "street", "Street Address"),
-            ("named_insured__address", "city", "City"),
-            ("named_insured__address", "state", "State"),
-            ("named_insured__address", "zip", "ZIP Code"),
-            ("named_insured", "phone", "Phone"),
-            ("named_insured", "email", "Email"),
-            # Coverages section
-            ("coverages", "building_limit", "Building Limit"),
-            ("coverages", "bpp_limit", "Business Personal Property"),
-            ("coverages", "bi_limit", "Business Income"),
-            ("coverages", "extra_expense_limit", "Extra Expense"),
-            ("coverages", "deductible", "Deductible"),
-            ("coverages", "wind_hail_deductible", "Wind/Hail Deductible"),
-            ("coverages", "coinsurance", "Coinsurance"),
-            ("coverages", "replacement_cost", "Replacement Cost"),
-            ("coverages", "agreed_value", "Agreed Value"),
-            ("coverages", "flood_coverage", "Flood Coverage"),
-            ("coverages", "earthquake_coverage", "Earthquake Coverage"),
-            ("coverages", "ordinance_or_law", "Ordinance or Law"),
-            # Premium section
-            ("premium", "total_premium", "Total Premium"),
-            ("premium", "building_premium", "Building Premium"),
-            ("premium", "bpp_premium", "BPP Premium"),
-            ("premium", "bi_premium", "BI Premium"),
-            ("premium", "taxes", "Taxes"),
-            ("premium", "fees", "Fees & Surcharges"),
-            ("premium", "minimum_earned_premium", "Min. Earned Premium"),
-            ("premium", "payment_plan", "Payment Plan"),
-            # Agent section
-            ("agent", "name", "Agent Name"),
-            ("agent", "agency", "Agency"),
-            ("agent", "phone", "Agent Phone"),
-            ("agent", "email", "Agent Email"),
-            ("agent", "license_number", "License Number"),
-            # Mortgagee section
-            ("mortgagee", "name", "Mortgagee / Lienholder"),
-            ("mortgagee", "loan_number", "Loan Number"),
-            ("mortgagee", "address", "Mortgagee Address"),
-        ]
+def _resolve(data: dict, section: str, field: str):
+    if "__" in section:
+        parent, child = section.split("__", 1)
+        return data.get(parent, {}).get(child, {}).get(field)
+    return data.get(section, {}).get(field)
 
-        total_fields = len(field_order)
-        sent = 0
 
-        for section, field, label in field_order:
-            # Resolve nested address
-            if "__" in section:
-                parts = section.split("__")
-                value = policy_data.get(parts[0], {}).get(parts[1], {}).get(field)
-                data_key = f"{parts[0]}__{parts[1]}.{field}"
-            else:
-                value = policy_data.get(section, {}).get(field)
-                data_key = f"{section}.{field}"
+def _stream_policy(session_id: str, policy_data: dict, per_field_delay: float = 0.0):
+    total = len(FIELD_ORDER)
+    for sent, (section, field, label) in enumerate(FIELD_ORDER):
+        value = _resolve(policy_data, section, field)
+        if "__" in section:
+            parent, child = section.split("__", 1)
+            data_key = f"{parent}__{child}.{field}"
+        else:
+            data_key = f"{section}.{field}"
 
-            if value:
-                _push(session_id, {
-                    "type": "field",
-                    "key": data_key,
-                    "value": str(value),
-                    "label": label,
-                    "section": section.split("__")[0],
-                    "progress": round((sent + 1) / total_fields * 100),
-                })
-            sent += 1
-
-        # Stream locations separately
-        for i, loc in enumerate(policy_data.get("locations", [])[:5]):
+        if value:
             _push(session_id, {
-                "type": "location",
-                "index": i,
-                "data": loc,
-                "progress": 100,
+                "type": "field",
+                "key": data_key,
+                "value": str(value),
+                "label": label,
+                "section": section.split("__")[0],
+                "progress": round((sent + 1) / total * 100),
             })
+            if per_field_delay:
+                time.sleep(per_field_delay)
 
-        _push(session_id, {"type": "complete", "data": policy_data})
+    for i, loc in enumerate(policy_data.get("locations", [])[:5]):
+        _push(session_id, {
+            "type": "location",
+            "index": i,
+            "data": loc,
+            "progress": 100,
+        })
 
+    _push(session_id, {"type": "complete", "data": policy_data})
+
+
+def _run_demo(session_id: str, filepath: str):
+    try:
+        _push(session_id, {"type": "status", "phase": "reading", "message": "Agent reading policy..."})
+        time.sleep(1.6)
+        _push(session_id, {"type": "status", "phase": "extracting", "message": "Extracting data with Claude AI..."})
+        time.sleep(2.4)
+        _push(session_id, {"type": "status", "phase": "populating", "message": "Populating AMS..."})
+        time.sleep(0.8)
+        _stream_policy(session_id, DEMO_POLICY, per_field_delay=0.08)
     except Exception as exc:
         _push(session_id, {"type": "error", "message": str(exc)})
+
+
+def _run_live(session_id: str, filepath: str):
+    from agent.policy_extractor import PolicyExtractor
+    try:
+        _push(session_id, {"type": "status", "phase": "reading", "message": "Agent reading policy..."})
+        _push(session_id, {"type": "status", "phase": "extracting", "message": "Extracting data with Claude AI..."})
+        extractor = PolicyExtractor()
+        policy_data = extractor.extract(filepath)
+        _push(session_id, {"type": "status", "phase": "populating", "message": "Populating AMS..."})
+        _stream_policy(session_id, policy_data)
+    except Exception as exc:
+        _push(session_id, {"type": "error", "message": str(exc)})
+
+
+def _run_extraction(session_id: str, filepath: str):
+    if os.getenv("ANTHROPIC_API_KEY"):
+        _run_live(session_id, filepath)
+    else:
+        _run_demo(session_id, filepath)
 
 
 @app.route("/")
@@ -160,7 +270,11 @@ def upload():
     thread = threading.Thread(target=_run_extraction, args=(session_id, str(filepath)), daemon=True)
     thread.start()
 
-    return jsonify({"session_id": session_id, "filename": file.filename})
+    return jsonify({
+        "session_id": session_id,
+        "filename": file.filename,
+        "mode": "live" if os.getenv("ANTHROPIC_API_KEY") else "demo",
+    })
 
 
 @app.route("/api/stream/<session_id>")
@@ -192,6 +306,8 @@ def stream(session_id: str):
 if __name__ == "__main__":
     port = int(os.getenv("FLASK_PORT", 5000))
     debug = os.getenv("FLASK_DEBUG", "false").lower() == "true"
+    mode = "LIVE (Claude AI)" if os.getenv("ANTHROPIC_API_KEY") else "DEMO (no API key)"
     print(f"\n  Broker Agentic Challenge — Mock Applied Epic AMS")
+    print(f"  Mode: {mode}")
     print(f"  Running at http://localhost:{port}\n")
     app.run(host="0.0.0.0", port=port, debug=debug, threaded=True)
