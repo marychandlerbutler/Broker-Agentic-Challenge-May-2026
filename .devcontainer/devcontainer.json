@@ -1,0 +1,14 @@
+{
+  "name": "Broker Agentic Challenge",
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "forwardPorts": [5000],
+  "portsAttributes": {
+    "5000": {
+      "label": "Applied Epic AMS",
+      "visibility": "public",
+      "onAutoForward": "notify"
+    }
+  },
+  "postCreateCommand": "pip install -r requirements.txt",
+  "postStartCommand": "bash .devcontainer/start.sh"
+}
