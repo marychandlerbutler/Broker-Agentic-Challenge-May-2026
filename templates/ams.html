@@ -185,6 +185,65 @@
           </div>
         </div>
       </div>
+
+      <div class="form-card">
+        <div class="form-card-header">Policy Administration</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Policy Status</label>
+            <select id="f-policy.status" data-field="policy.status" data-tab="policy">
+              <option value=""></option>
+              <option value="Active">Active</option>
+              <option value="Cancelled">Cancelled</option>
+              <option value="Non-Renewed">Non-Renewed</option>
+              <option value="Expired">Expired</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Transaction Type</label>
+            <select id="f-policy.transaction_type" data-field="policy.transaction_type" data-tab="policy">
+              <option value=""></option>
+              <option value="New Business">New Business</option>
+              <option value="Renewal">Renewal</option>
+              <option value="Endorsement">Endorsement</option>
+              <option value="Cancellation">Cancellation</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Renewal Of</label>
+            <input type="text" id="f-policy.renewal_of" data-field="policy.renewal_of" data-tab="policy" readonly>
+          </div>
+          <div class="form-group">
+            <label>Policy Fee</label>
+            <input type="text" id="f-policy.policy_fee" data-field="policy.policy_fee" data-tab="policy" readonly>
+          </div>
+          <div class="form-group">
+            <label>Surplus Lines</label>
+            <select id="f-policy.surplus_lines" data-field="policy.surplus_lines" data-tab="policy">
+              <option value=""></option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Admitted / Non-Admitted</label>
+            <select id="f-policy.admitted" data-field="policy.admitted" data-tab="policy">
+              <option value=""></option>
+              <option value="Admitted">Admitted</option>
+              <option value="Non-Admitted">Non-Admitted</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Audit Frequency</label>
+            <select id="f-policy.audit_frequency" data-field="policy.audit_frequency" data-tab="policy">
+              <option value=""></option>
+              <option value="Annual">Annual</option>
+              <option value="Semi-Annual">Semi-Annual</option>
+              <option value="None">None</option>
+            </select>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ══ TAB: NAMED INSURED ══ -->
@@ -236,6 +295,44 @@
           <div class="form-group">
             <label>Email Address</label>
             <input type="text" id="f-named_insured.email" data-field="named_insured.email" data-tab="insured" readonly>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-card-header">Business Information</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>SIC Code</label>
+            <input type="text" id="f-named_insured.sic_code" data-field="named_insured.sic_code" data-tab="insured" readonly>
+          </div>
+          <div class="form-group">
+            <label>Years in Business</label>
+            <input type="text" id="f-named_insured.years_in_business" data-field="named_insured.years_in_business" data-tab="insured" readonly>
+          </div>
+          <div class="form-group">
+            <label>Annual Revenue</label>
+            <input type="text" id="f-named_insured.annual_revenue" data-field="named_insured.annual_revenue" data-tab="insured" readonly>
+          </div>
+          <div class="form-group">
+            <label>Number of Employees</label>
+            <input type="text" id="f-named_insured.num_employees" data-field="named_insured.num_employees" data-tab="insured" readonly>
+          </div>
+          <div class="form-group span-2">
+            <label>Website</label>
+            <input type="text" id="f-named_insured.website" data-field="named_insured.website" data-tab="insured" readonly>
+          </div>
+          <div class="form-group">
+            <label>Account Executive</label>
+            <input type="text" id="f-named_insured.account_executive" data-field="named_insured.account_executive" data-tab="insured" readonly>
+          </div>
+          <div class="form-group">
+            <label>Account Manager</label>
+            <input type="text" id="f-named_insured.account_manager" data-field="named_insured.account_manager" data-tab="insured" readonly>
+          </div>
+          <div class="form-group">
+            <label>Customer Since</label>
+            <input type="text" id="f-named_insured.customer_since" data-field="named_insured.customer_since" data-tab="insured" readonly>
           </div>
         </div>
       </div>
@@ -308,6 +405,100 @@
             <label>Equipment Breakdown</label>
             <input type="text" id="f-coverages.equipment_breakdown" data-field="coverages.equipment_breakdown" data-tab="coverages" readonly>
           </div>
+          <div class="form-group">
+            <label>Inflation Guard</label>
+            <input type="text" id="f-coverages.inflation_guard" data-field="coverages.inflation_guard" data-tab="coverages" readonly>
+          </div>
+          <div class="form-group">
+            <label>Peak Season Increase</label>
+            <input type="text" id="f-coverages.peak_season_increase" data-field="coverages.peak_season_increase" data-tab="coverages" readonly>
+          </div>
+          <div class="form-group">
+            <label>Blanket / Specific</label>
+            <select id="f-coverages.blanket_specific" data-field="coverages.blanket_specific" data-tab="coverages">
+              <option value=""></option>
+              <option value="Blanket">Blanket</option>
+              <option value="Specific">Specific</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Inland Marine</label>
+            <select id="f-coverages.inland_marine" data-field="coverages.inland_marine" data-tab="coverages">
+              <option value=""></option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Functional Replacement Cost</label>
+            <select id="f-coverages.functional_replacement_cost" data-field="coverages.functional_replacement_cost" data-tab="coverages">
+              <option value=""></option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Actual Cash Value</label>
+            <select id="f-coverages.actual_cash_value" data-field="coverages.actual_cash_value" data-tab="coverages">
+              <option value=""></option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-card-header">Special Coverages</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Spoilage Coverage</label>
+            <select id="f-coverages.spoilage_coverage" data-field="coverages.spoilage_coverage" data-tab="coverages">
+              <option value=""></option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Spoilage Limit</label>
+            <input type="text" id="f-coverages.spoilage_limit" data-field="coverages.spoilage_limit" data-tab="coverages" readonly>
+          </div>
+          <div class="form-group">
+            <label>Outdoor Property</label>
+            <select id="f-coverages.outdoor_property" data-field="coverages.outdoor_property" data-tab="coverages">
+              <option value=""></option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Outdoor Property Limit</label>
+            <input type="text" id="f-coverages.outdoor_property_limit" data-field="coverages.outdoor_property_limit" data-tab="coverages" readonly>
+          </div>
+          <div class="form-group">
+            <label>Signs Coverage</label>
+            <select id="f-coverages.signs_coverage" data-field="coverages.signs_coverage" data-tab="coverages">
+              <option value=""></option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Signs Limit</label>
+            <input type="text" id="f-coverages.signs_limit" data-field="coverages.signs_limit" data-tab="coverages" readonly>
+          </div>
+          <div class="form-group">
+            <label>Glass Coverage</label>
+            <select id="f-coverages.glass_coverage" data-field="coverages.glass_coverage" data-tab="coverages">
+              <option value=""></option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Glass Limit</label>
+            <input type="text" id="f-coverages.glass_limit" data-field="coverages.glass_limit" data-tab="coverages" readonly>
+          </div>
         </div>
       </div>
     </div>
@@ -362,6 +553,50 @@
         <div class="premium-total-value" id="premium-total-display">—</div>
         <input type="hidden" id="f-premium.total_premium" data-field="premium.total_premium" data-tab="premium">
       </div>
+
+      <div class="form-card">
+        <div class="form-card-header">Agency Compensation</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Commission %</label>
+            <input type="text" id="f-premium.agency_commission_pct" data-field="premium.agency_commission_pct" data-tab="premium" readonly>
+          </div>
+          <div class="form-group">
+            <label>Commission Amount</label>
+            <input type="text" id="f-premium.agency_commission_amount" data-field="premium.agency_commission_amount" data-tab="premium" readonly>
+          </div>
+          <div class="form-group">
+            <label>Broker Fee</label>
+            <input type="text" id="f-premium.broker_fee" data-field="premium.broker_fee" data-tab="premium" readonly>
+          </div>
+          <div class="form-group">
+            <label>Surplus Lines Tax</label>
+            <input type="text" id="f-premium.surplus_lines_tax" data-field="premium.surplus_lines_tax" data-tab="premium" readonly>
+          </div>
+          <div class="form-group">
+            <label>Stamping Fee</label>
+            <input type="text" id="f-premium.stamping_fee" data-field="premium.stamping_fee" data-tab="premium" readonly>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-card-header">Billing &amp; Installments</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Down Payment</label>
+            <input type="text" id="f-premium.down_payment" data-field="premium.down_payment" data-tab="premium" readonly>
+          </div>
+          <div class="form-group">
+            <label>Installment Amount</label>
+            <input type="text" id="f-premium.installment_amount" data-field="premium.installment_amount" data-tab="premium" readonly>
+          </div>
+          <div class="form-group span-2">
+            <label>Installment Due Dates</label>
+            <input type="text" id="f-premium.installment_due_dates" data-field="premium.installment_due_dates" data-tab="premium" readonly>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ══ TAB: AGENT / MORTGAGEE ══ -->
@@ -405,6 +640,54 @@
           <div class="form-group span-2">
             <label>Mortgagee Address</label>
             <input type="text" id="f-mortgagee.address" data-field="mortgagee.address" data-tab="agent" readonly>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-card-header">Loss Payee</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Loss Payee Name</label>
+            <input type="text" id="f-loss_payee.name" data-field="loss_payee.name" data-tab="agent" readonly>
+          </div>
+          <div class="form-group span-2">
+            <label>Loss Payee Address</label>
+            <input type="text" id="f-loss_payee.address" data-field="loss_payee.address" data-tab="agent" readonly>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-card-header">Additional Insured</div>
+        <div class="form-grid">
+          <div class="form-group span-2">
+            <label>Additional Insured Name</label>
+            <input type="text" id="f-additional_insured.name" data-field="additional_insured.name" data-tab="agent" readonly>
+          </div>
+          <div class="form-group">
+            <label>Relationship</label>
+            <input type="text" id="f-additional_insured.relationship" data-field="additional_insured.relationship" data-tab="agent" readonly>
+          </div>
+          <div class="form-group">
+            <label>Certificate Holder</label>
+            <input type="text" id="f-additional_insured.certificate_holder" data-field="additional_insured.certificate_holder" data-tab="agent" readonly>
+          </div>
+          <div class="form-group">
+            <label>Waiver of Subrogation</label>
+            <select id="f-additional_insured.waiver_of_subrogation" data-field="additional_insured.waiver_of_subrogation" data-tab="agent">
+              <option value=""></option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Primary &amp; Non-Contributory</label>
+            <select id="f-additional_insured.primary_noncontributory" data-field="additional_insured.primary_noncontributory" data-tab="agent">
+              <option value=""></option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
           </div>
         </div>
       </div>

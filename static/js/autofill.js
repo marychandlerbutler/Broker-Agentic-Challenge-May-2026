@@ -59,7 +59,7 @@
     setTimeout(() => { aiBanner.classList.add('hidden'); }, 4000);
   }
 
-  // ── Typing animation ──────────────────────────────────────────
+  // ── Typing / fill animation ───────────────────────────────────
   // Each call queues behind the previous so fields fill one at a time.
   let fillQueue = Promise.resolve();
 
@@ -75,6 +75,22 @@
       // Scroll the field into view
       input.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
+      // ── SELECT elements: instant set + flash ──────────────────
+      if (input.tagName === 'SELECT') {
+        input.value = str;
+        input.classList.add('auto-filling');
+        // Mark the tab as having data
+        const btn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
+        if (btn) btn.classList.add('has-data');
+        setTimeout(() => {
+          input.classList.remove('auto-filling');
+          input.classList.add('auto-filled');
+          setTimeout(() => { input.classList.remove('auto-filled'); resolve(); }, 600);
+        }, 120);
+        return;
+      }
+
+      // ── INPUT elements: character-by-character typing ─────────
       input.value = '';
       input.classList.add('auto-filling');
 
@@ -123,6 +139,18 @@
         ${locField('Occupancy', data.occupancy)}
         ${locField('Sq. Footage', data.square_footage)}
         ${locField('Stories', data.num_stories)}
+        ${locField('Description', data.building_description)}
+        ${locField('Roof Type', data.roof_type)}
+        ${locField('Roof Year', data.roof_year)}
+        ${locField('Wiring Year', data.wiring_year)}
+        ${locField('Plumbing Year', data.plumbing_year)}
+        ${locField('HVAC Year', data.hvac_year)}
+        ${locField('Sprinklered', data.sprinklered)}
+        ${locField('Alarm Type', data.alarm_type)}
+        ${locField('Dist. to Hydrant', data.distance_to_hydrant)}
+        ${locField('Dist. to Station', data.distance_to_station)}
+        ${locField('Flood Zone', data.flood_zone)}
+        ${locField('Earthquake Zone', data.earthquake_zone)}
       </div>
     `;
     container.appendChild(card);

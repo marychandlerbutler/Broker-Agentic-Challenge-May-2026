@@ -387,6 +387,30 @@ body {
   box-shadow: 0 0 0 2px rgba(26,95,180,0.15);
 }
 
+/* ─── Select element styling (matches input[type="text"]) ────── */
+.form-group select {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 6px 28px 6px 9px;
+  font-size: 13px;
+  color: var(--text);
+  background: #fafbfc url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%237a8fa6' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E") no-repeat right 9px center;
+  background-size: 10px 6px;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+}
+.form-group select:focus {
+  border-color: var(--blue);
+  background-color: #fff;
+  box-shadow: 0 0 0 2px rgba(26,95,180,0.15);
+}
+
 /* ─── Auto-fill animation states ────────────────────────────── */
 input.auto-filling {
   background: var(--fill-glow) !important;
@@ -402,6 +426,21 @@ input.auto-filling {
 }
 input.auto-filled {
   background: var(--filled-bg) !important;
+  border-color: var(--filled-bdr) !important;
+  box-shadow: 0 0 0 2px rgba(40,167,69,0.2) !important;
+  transition: all 0.4s ease;
+}
+
+/* ─── Select auto-fill animation states ─────────────────────── */
+select.auto-filling {
+  background-color: var(--fill-glow) !important;
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 0 2px rgba(245,158,11,0.2) !important;
+  color: var(--navy) !important;
+  animation: filling-pulse 0.6s ease-in-out infinite alternate;
+}
+select.auto-filled {
+  background-color: var(--filled-bg) !important;
   border-color: var(--filled-bdr) !important;
   box-shadow: 0 0 0 2px rgba(40,167,69,0.2) !important;
   transition: all 0.4s ease;
