@@ -91,6 +91,7 @@
         return;
       }
 
+      // ── TEXTAREA elements: same as input (char-by-char) ──────
       // ── INPUT elements: character-by-character typing ─────────
       input.value = '';
       input.classList.add('auto-filling');
@@ -152,6 +153,13 @@
         ${locField('Dist. to Station', data.distance_to_station)}
         ${locField('Flood Zone', data.flood_zone)}
         ${locField('Earthquake Zone', data.earthquake_zone)}
+        ${locField('County', data.county)}
+        ${locField('Territory Code', data.territory_code)}
+        ${locField('Other Structures (Cov B)', data.other_structures)}
+        ${locField('Rental Value', data.rental_value)}
+        ${locField('Flood Deductible', data.flood_deductible)}
+        ${locField('Earthquake Deductible', data.earthquake_deductible)}
+        ${locField('Deductible Type', data.deductible_type_code)}
       </div>
     `;
     container.appendChild(card);

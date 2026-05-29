@@ -77,6 +77,10 @@ DEMO_POLICY = {
         "surplus_lines": "No",
         "admitted": "Admitted",
         "audit_frequency": "Annual",
+        "billing_type": "Agency Bill",
+        "lob_code": "CPKG",
+        "source_code": "Renewal",
+        "branch_structure": "Columbus Commercial Lines",
     },
     "coverages": {
         "building_limit": "$3,200,000",
@@ -106,6 +110,14 @@ DEMO_POLICY = {
         "signs_limit": "",
         "glass_coverage": "Yes",
         "glass_limit": "$25,000",
+        "rental_value": "$0",
+        "blanket_building": "$0",
+        "blanket_pers_prop": "$0",
+        "crime_coverage": "No",
+        "crime_limit": "",
+        "inland_marine_type": "N/A",
+        "coverage_code": "BLDG",
+        "line_premium": "$32,400",
     },
     "locations": [
         {
@@ -130,6 +142,13 @@ DEMO_POLICY = {
             "distance_to_station": "0.8 miles",
             "flood_zone": "X",
             "earthquake_zone": "Zone 2",
+            "county": "Franklin",
+            "territory_code": "OH-15",
+            "other_structures": "$0",
+            "rental_value": "$0",
+            "flood_deductible": "$0",
+            "earthquake_deductible": "$0",
+            "deductible_type_code": "Flat Dollar",
         },
     ],
     "premium": {
@@ -182,6 +201,16 @@ DEMO_POLICY = {
         "certificate_holder": "Applied Power Systems Inc.",
         "waiver_of_subrogation": "Yes",
         "primary_noncontributory": "Yes",
+        "interest_type_code": "Mortgagee",
+        "priority_rank": "1st",
+    },
+    "binder": {
+        "binder_number": "BND-2025-4421",
+        "binder_effective_date": "05/15/2025",
+        "binder_expiration_date": "06/01/2025",
+    },
+    "remarks": {
+        "special_conditions": "Waiver of subrogation applies to all operations per blanket endorsement CP 04 05.",
     },
 }
 
@@ -225,6 +254,10 @@ FIELD_ORDER = [
     ("policy", "surplus_lines", "Surplus Lines"),
     ("policy", "admitted", "Admitted / Non-Admitted"),
     ("policy", "audit_frequency", "Audit Frequency"),
+    ("policy", "billing_type", "Billing Type"),
+    ("policy", "lob_code", "LOB Code"),
+    ("policy", "source_code", "Source Code"),
+    ("policy", "branch_structure", "Branch / Structure"),
     # ── Coverages tab ──
     ("coverages", "building_limit", "Building Limit"),
     ("coverages", "bpp_limit", "Business Personal Property"),
@@ -255,6 +288,15 @@ FIELD_ORDER = [
     ("coverages", "signs_limit", "Signs Limit"),
     ("coverages", "glass_coverage", "Glass Coverage"),
     ("coverages", "glass_limit", "Glass Limit"),
+    # ── AL3 Coverages additions ──
+    ("coverages", "rental_value", "Rental Value"),
+    ("coverages", "blanket_building", "Blanket Building"),
+    ("coverages", "blanket_pers_prop", "Blanket Pers. Prop"),
+    ("coverages", "crime_coverage", "Crime Coverage"),
+    ("coverages", "crime_limit", "Crime Limit"),
+    ("coverages", "inland_marine_type", "Inland Marine Type"),
+    ("coverages", "coverage_code", "Coverage Code"),
+    ("coverages", "line_premium", "Line Premium"),
     # ── Premium tab ──
     ("premium", "total_premium", "Total Premium"),
     ("premium", "building_premium", "Building Premium"),
@@ -303,6 +345,14 @@ FIELD_ORDER = [
     ("additional_insured", "certificate_holder", "Certificate Holder"),
     ("additional_insured", "waiver_of_subrogation", "Waiver of Subrogation"),
     ("additional_insured", "primary_noncontributory", "Primary & Non-Contributory"),
+    ("additional_insured", "interest_type_code", "Interest Type Code"),
+    ("additional_insured", "priority_rank", "Priority / Rank"),
+    # ── Binder Information (Additional Interests tab) ──
+    ("binder", "binder_number", "Binder Number"),
+    ("binder", "binder_effective_date", "Binder Effective Date"),
+    ("binder", "binder_expiration_date", "Binder Expiration Date"),
+    # ── Remarks (Additional Interests tab) ──
+    ("remarks", "special_conditions", "Special Conditions"),
 ]
 
 

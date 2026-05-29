@@ -139,7 +139,7 @@
       <button class="tab-btn" data-tab="coverages">Coverages</button>
       <button class="tab-btn" data-tab="locations">Locations</button>
       <button class="tab-btn" data-tab="premium">Premium</button>
-      <button class="tab-btn" data-tab="agent">Agent / Mortgagee</button>
+      <button class="tab-btn" data-tab="agent">Additional Interests</button>
     </div>
 
     <!-- ══ TAB: POLICY DETAILS ══ -->
@@ -193,10 +193,10 @@
             <label>Policy Status</label>
             <select id="f-policy.status" data-field="policy.status" data-tab="policy">
               <option value=""></option>
-              <option value="Active">Active</option>
-              <option value="Cancelled">Cancelled</option>
-              <option value="Non-Renewed">Non-Renewed</option>
-              <option value="Expired">Expired</option>
+              <option value="New Business">New Business</option>
+              <option value="Renewal">Renewal</option>
+              <option value="Endorsement">Endorsement</option>
+              <option value="Cancellation">Cancellation</option>
             </select>
           </div>
           <div class="form-group">
@@ -242,6 +242,33 @@
               <option value="None">None</option>
             </select>
           </div>
+          <div class="form-group">
+            <label>Billing Type <span class="req">*</span></label>
+            <select id="f-policy.billing_type" data-field="policy.billing_type" data-tab="policy">
+              <option value=""></option>
+              <option value="Agency Bill">Agency Bill</option>
+              <option value="Direct Bill">Direct Bill</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>LOB Code <span class="req">*</span></label>
+            <input type="text" id="f-policy.lob_code" data-field="policy.lob_code" data-tab="policy" readonly>
+          </div>
+          <div class="form-group">
+            <label>Source Code</label>
+            <select id="f-policy.source_code" data-field="policy.source_code" data-tab="policy">
+              <option value=""></option>
+              <option value="Referral">Referral</option>
+              <option value="Web">Web</option>
+              <option value="Walk-in">Walk-in</option>
+              <option value="Renewal">Renewal</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Branch / Structure</label>
+            <input type="text" id="f-policy.branch_structure" data-field="policy.branch_structure" data-tab="policy" readonly>
+          </div>
         </div>
       </div>
     </div>
@@ -260,8 +287,17 @@
             <input type="text" id="f-named_insured.dba" data-field="named_insured.dba" data-tab="insured" readonly>
           </div>
           <div class="form-group">
-            <label>Entity Type</label>
-            <input type="text" id="f-named_insured.entity_type" data-field="named_insured.entity_type" data-tab="insured" readonly>
+            <label>Account Type</label>
+            <select id="f-named_insured.entity_type" data-field="named_insured.entity_type" data-tab="insured">
+              <option value=""></option>
+              <option value="Individual">Individual</option>
+              <option value="Corporation">Corporation</option>
+              <option value="Partnership">Partnership</option>
+              <option value="LLC">LLC</option>
+              <option value="Limited Liability Company">Limited Liability Company</option>
+              <option value="Trust">Trust</option>
+              <option value="Joint Venture">Joint Venture</option>
+            </select>
           </div>
           <div class="form-group">
             <label>FEIN</label>
@@ -303,7 +339,7 @@
         <div class="form-card-header">Business Information</div>
         <div class="form-grid">
           <div class="form-group">
-            <label>SIC Code</label>
+            <label>NAICS / SIC Code</label>
             <input type="text" id="f-named_insured.sic_code" data-field="named_insured.sic_code" data-tab="insured" readonly>
           </div>
           <div class="form-group">
@@ -348,11 +384,11 @@
             <input type="text" id="f-coverages.building_limit" data-field="coverages.building_limit" data-tab="coverages" readonly>
           </div>
           <div class="form-group">
-            <label>Business Personal Property</label>
+            <label>Contents / BPP (Cov C)</label>
             <input type="text" id="f-coverages.bpp_limit" data-field="coverages.bpp_limit" data-tab="coverages" readonly>
           </div>
           <div class="form-group">
-            <label>Business Income</label>
+            <label>Loss of Income / BI (Cov D)</label>
             <input type="text" id="f-coverages.bi_limit" data-field="coverages.bi_limit" data-tab="coverages" readonly>
           </div>
           <div class="form-group">
@@ -444,6 +480,42 @@
               <option value="Yes">Yes</option>
               <option value="No">No</option>
             </select>
+          </div>
+          <div class="form-group">
+            <label>Rental Value</label>
+            <input type="text" id="f-coverages.rental_value" data-field="coverages.rental_value" data-tab="coverages" readonly>
+          </div>
+          <div class="form-group">
+            <label>Blanket Building</label>
+            <input type="text" id="f-coverages.blanket_building" data-field="coverages.blanket_building" data-tab="coverages" readonly>
+          </div>
+          <div class="form-group">
+            <label>Blanket Pers. Prop</label>
+            <input type="text" id="f-coverages.blanket_pers_prop" data-field="coverages.blanket_pers_prop" data-tab="coverages" readonly>
+          </div>
+          <div class="form-group">
+            <label>Crime Coverage</label>
+            <select id="f-coverages.crime_coverage" data-field="coverages.crime_coverage" data-tab="coverages">
+              <option value=""></option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Crime Limit</label>
+            <input type="text" id="f-coverages.crime_limit" data-field="coverages.crime_limit" data-tab="coverages" readonly>
+          </div>
+          <div class="form-group">
+            <label>Inland Marine Type</label>
+            <input type="text" id="f-coverages.inland_marine_type" data-field="coverages.inland_marine_type" data-tab="coverages" readonly>
+          </div>
+          <div class="form-group">
+            <label>Coverage Code</label>
+            <input type="text" id="f-coverages.coverage_code" data-field="coverages.coverage_code" data-tab="coverages" readonly>
+          </div>
+          <div class="form-group">
+            <label>Line Premium</label>
+            <input type="text" id="f-coverages.line_premium" data-field="coverages.line_premium" data-tab="coverages" readonly>
           </div>
         </div>
       </div>
@@ -739,6 +811,53 @@
               <option value="Yes">Yes</option>
               <option value="No">No</option>
             </select>
+          </div>
+          <div class="form-group">
+            <label>Interest Type Code</label>
+            <select id="f-additional_insured.interest_type_code" data-field="additional_insured.interest_type_code" data-tab="agent">
+              <option value=""></option>
+              <option value="Mortgagee">Mortgagee</option>
+              <option value="Loss Payee">Loss Payee</option>
+              <option value="Additional Insured">Additional Insured</option>
+              <option value="Certificate Holder">Certificate Holder</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Priority / Rank</label>
+            <select id="f-additional_insured.priority_rank" data-field="additional_insured.priority_rank" data-tab="agent">
+              <option value=""></option>
+              <option value="1st">1st</option>
+              <option value="2nd">2nd</option>
+              <option value="3rd">3rd</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-card-header">Binder Information</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Binder Number</label>
+            <input type="text" id="f-binder.binder_number" data-field="binder.binder_number" data-tab="agent" readonly>
+          </div>
+          <div class="form-group">
+            <label>Binder Effective Date</label>
+            <input type="text" id="f-binder.binder_effective_date" data-field="binder.binder_effective_date" data-tab="agent" readonly>
+          </div>
+          <div class="form-group">
+            <label>Binder Expiration Date</label>
+            <input type="text" id="f-binder.binder_expiration_date" data-field="binder.binder_expiration_date" data-tab="agent" readonly>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-card-header">Remarks / Special Conditions</div>
+        <div class="form-grid">
+          <div class="form-group span-2">
+            <label>Special Conditions</label>
+            <textarea id="f-remarks.special_conditions" data-field="remarks.special_conditions" data-tab="agent" rows="4" readonly></textarea>
           </div>
         </div>
       </div>

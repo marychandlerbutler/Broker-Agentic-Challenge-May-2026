@@ -369,7 +369,13 @@ body {
   letter-spacing: 0.4px;
   margin-bottom: 5px;
 }
-.form-group input[type="text"] {
+.form-group label .req {
+  color: #c0392b;
+  font-weight: 700;
+  margin-left: 2px;
+}
+.form-group input[type="text"],
+.form-group textarea {
   width: 100%;
   border: 1px solid var(--border);
   border-radius: 4px;
@@ -380,8 +386,14 @@ body {
   outline: none;
   transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
   font-family: inherit;
+  box-sizing: border-box;
 }
-.form-group input[type="text"]:focus {
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+.form-group input[type="text"]:focus,
+.form-group textarea:focus {
   border-color: var(--blue);
   background: #fff;
   box-shadow: 0 0 0 2px rgba(26,95,180,0.15);
@@ -412,7 +424,8 @@ body {
 }
 
 /* ─── Auto-fill animation states ────────────────────────────── */
-input.auto-filling {
+input.auto-filling,
+textarea.auto-filling {
   background: var(--fill-glow) !important;
   border-color: #f59e0b !important;
   box-shadow: 0 0 0 2px rgba(245,158,11,0.2) !important;
@@ -424,7 +437,8 @@ input.auto-filling {
   from { box-shadow: 0 0 0 2px rgba(245,158,11,0.15); }
   to   { box-shadow: 0 0 0 4px rgba(245,158,11,0.35); }
 }
-input.auto-filled {
+input.auto-filled,
+textarea.auto-filled {
   background: var(--filled-bg) !important;
   border-color: var(--filled-bdr) !important;
   box-shadow: 0 0 0 2px rgba(40,167,69,0.2) !important;
