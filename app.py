@@ -149,6 +149,15 @@ DEMO_POLICY = {
         "down_payment": "$12,187",
         "installment_amount": "$12,187",
         "installment_due_dates": "09/01, 12/01, 03/01",
+        "billed_premium": "$48,750",
+        "annualized_premium": "$48,750",
+        "estimated_premium": "$48,750",
+        "auditable_policy": "No",
+        "premium_financed": "No",
+        "finance_company": "",
+        "finance_agreement": "",
+        "financed_amount": "",
+        "finance_rate": "",
     },
     "agent": {
         "name": "Mary Butler",
@@ -265,6 +274,17 @@ FIELD_ORDER = [
     ("premium", "down_payment", "Down Payment"),
     ("premium", "installment_amount", "Installment Amount"),
     ("premium", "installment_due_dates", "Installment Due Dates"),
+    # -- Premium Breakdown additions --
+    ("premium", "billed_premium", "Billed Premium"),
+    ("premium", "annualized_premium", "Annualized Premium"),
+    ("premium", "estimated_premium", "Estimated Premium"),
+    ("premium", "auditable_policy", "Auditable Policy"),
+    # -- Premium Finance --
+    ("premium", "premium_financed", "Premium Financed"),
+    ("premium", "finance_company", "Finance Company"),
+    ("premium", "finance_agreement", "Finance Agreement #"),
+    ("premium", "financed_amount", "Financed Amount"),
+    ("premium", "finance_rate", "Finance Rate %"),
     # ── Agent / Mortgagee tab ──
     ("agent", "name", "Agent Name"),
     ("agent", "agency", "Agency"),

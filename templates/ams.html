@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Applied Epic — Commercial Lines</title>
+  <title>Accenture AMS — Commercial Lines</title>
   <link rel="stylesheet" href="/static/css/ams.css">
 </head>
 <body>
@@ -12,8 +12,8 @@
 <header class="ams-header">
   <div class="header-left">
     <div class="ae-logo">
-      <span class="logo-mark">AE</span>
-      <span class="logo-text">Applied<strong>Epic</strong></span>
+      <span class="logo-mark">AC</span>
+      <span class="logo-text">Accenture<strong>AMS</strong></span>
     </div>
     <nav class="header-nav">
       <a href="#" class="hnav-item active">Commercial Lines</a>
@@ -546,6 +546,26 @@
             <label>Payment Plan</label>
             <input type="text" id="f-premium.payment_plan" data-field="premium.payment_plan" data-tab="premium" readonly>
           </div>
+          <div class="form-group">
+            <label>Billed Premium</label>
+            <input type="text" id="f-premium.billed_premium" data-field="premium.billed_premium" data-tab="premium" readonly>
+          </div>
+          <div class="form-group">
+            <label>Annualized Premium</label>
+            <input type="text" id="f-premium.annualized_premium" data-field="premium.annualized_premium" data-tab="premium" readonly>
+          </div>
+          <div class="form-group">
+            <label>Estimated Premium</label>
+            <input type="text" id="f-premium.estimated_premium" data-field="premium.estimated_premium" data-tab="premium" readonly>
+          </div>
+          <div class="form-group">
+            <label>Auditable Policy</label>
+            <select id="f-premium.auditable_policy" data-field="premium.auditable_policy" data-tab="premium">
+              <option value="">--</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
         </div>
       </div>
       <div class="form-card premium-total-card">
@@ -597,9 +617,40 @@
           </div>
         </div>
       </div>
+
+      <div class="form-card">
+        <div class="form-card-header">Premium Finance</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Premium Financed</label>
+            <select id="f-premium.premium_financed" data-field="premium.premium_financed" data-tab="premium"
+                    onchange="toggleFinanceFields(this.value)">
+              <option value="">--</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="form-group finance-conditional">
+            <label>Finance Company</label>
+            <input type="text" id="f-premium.finance_company" data-field="premium.finance_company" data-tab="premium" readonly>
+          </div>
+          <div class="form-group finance-conditional">
+            <label>Finance Agreement #</label>
+            <input type="text" id="f-premium.finance_agreement" data-field="premium.finance_agreement" data-tab="premium" readonly>
+          </div>
+          <div class="form-group finance-conditional">
+            <label>Financed Amount</label>
+            <input type="text" id="f-premium.financed_amount" data-field="premium.financed_amount" data-tab="premium" readonly>
+          </div>
+          <div class="form-group finance-conditional">
+            <label>Finance Rate %</label>
+            <input type="text" id="f-premium.finance_rate" data-field="premium.finance_rate" data-tab="premium" readonly>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- ══ TAB: AGENT / MORTGAGEE ══ -->
+    <!--══ TAB: AGENT / MORTGAGEE ══ -->
     <div class="tab-panel" id="tab-agent">
       <div class="form-card">
         <div class="form-card-header">Producing Agent</div>
@@ -703,7 +754,7 @@
     <span id="sb-msg">Ready — drop a PDF or click "Upload Policy PDF" to begin</span>
   </div>
   <div class="sb-right">
-    <span>Applied Epic v24.3</span>
+    <span>Accenture AMS v24.3</span>
     <span class="sb-sep">|</span>
     <span>Commercial Lines Module</span>
     <span class="sb-sep">|</span>

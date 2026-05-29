@@ -78,6 +78,7 @@
       // ── SELECT elements: instant set + flash ──────────────────
       if (input.tagName === 'SELECT') {
         input.value = str;
+        input.dispatchEvent(new Event('change')); // fire any onchange handlers (e.g. finance toggle)
         input.classList.add('auto-filling');
         // Mark the tab as having data
         const btn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
@@ -294,6 +295,13 @@
     const file = e.dataTransfer.files[0];
     if (file) uploadFile(file);
   });
+
+  // ── Premium Finance show/hide ─────────────────────────────────
+  window.toggleFinanceFields = function (value) {
+    document.querySelectorAll('.finance-conditional').forEach(el => {
+      el.classList.toggle('visible', value === 'Yes');
+    });
+  };
 
   // ── Save button (mock) ────────────────────────────────────────
   window.savePolicy = function () {

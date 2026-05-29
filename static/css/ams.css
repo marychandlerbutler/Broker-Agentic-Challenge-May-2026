@@ -563,6 +563,10 @@ select.auto-filled {
 .sb-right { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.35); }
 .sb-sep { opacity: 0.3; }
 
+/* ─── Premium Finance conditional fields ───────────────────── */
+.finance-conditional { display: none; }
+.finance-conditional.visible { display: block; }
+
 /* ─── Scrollbar ─────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
