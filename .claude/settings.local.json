@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python *)",
+      "Bash(chmod +x .devcontainer/start.sh)",
+      "Bash(bash .devcontainer/start.sh)",
+      "Bash(git add *)",
+      "Bash(git update-index *)",
+      "Bash(git commit -m ' *)",
+      "Bash(pkill -f \"python app.py\")"
+    ]
+  }
+}
