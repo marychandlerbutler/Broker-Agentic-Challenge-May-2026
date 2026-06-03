@@ -34,27 +34,27 @@ def _push(session_id: str, event: dict):
 
 # ─────────────────────────────────────────────────────────────
 # Demo data — used when no ANTHROPIC_API_KEY is configured.
-# Riverside Manufacturing LLC, a fictional Commercial Property risk.
+# LINCOLN COUNTY, a fictional Commercial Property risk.
 # ─────────────────────────────────────────────────────────────
 DEMO_POLICY = {
     "named_insured": {
-        "name": "Riverside Manufacturing LLC",
-        "dba": "Riverside Mfg.",
-        "entity_type": "Limited Liability Company",
-        "fein": "31-4872910",
+        "name": "LINCOLN COUNTY",
+        "dba": "",
+        "entity_type": "Government Entity",
+        "fein": "64-6001452",
         "address": {
-            "street": "4821 Industrial Parkway",
-            "city": "Columbus",
-            "state": "OH",
-            "zip": "43215",
+            "street": "1200 Government Plaza",
+            "city": "Brookhaven",
+            "state": "MS",
+            "zip": "39601",
         },
         "phone": "(614) 555-0192",
-        "email": "operations@riversidemfg.com",
+        "email": "admin@lincolncountyms.gov",
         "sic_code": "3460",
         "years_in_business": "18",
         "annual_revenue": "$12,400,000",
         "num_employees": "87",
-        "website": "www.riversidemfg.com",
+        "website": "www.lincolncountyms.gov",
         "account_executive": "James Whitfield",
         "account_manager": "Sandra Torres",
         "customer_since": "01/15/2007",
@@ -80,7 +80,7 @@ DEMO_POLICY = {
         "billing_type": "Agency Bill",
         "lob_code": "CPKG",
         "source_code": "Renewal",
-        "branch_structure": "Columbus Commercial Lines",
+        "branch_structure": "Brookhaven Commercial Lines",
     },
     "coverages": {
         "building_limit": "$3,200,000",
@@ -122,7 +122,7 @@ DEMO_POLICY = {
     "locations": [
         {
             "location_number": "1",
-            "address": "4821 Industrial Parkway, Columbus, OH 43215",
+            "address": "1200 Government Plaza, Brookhaven, OH 43215",
             "building_value": "$3,200,000",
             "bpp_value": "$850,000",
             "year_built": "1998",
@@ -189,11 +189,11 @@ DEMO_POLICY = {
     "mortgagee": {
         "name": "Huntington National Bank",
         "loan_number": "HNB-2019-114882",
-        "address": "41 S High St, Columbus, OH 43215",
+        "address": "41 S High St, Brookhaven, OH 43215",
     },
     "loss_payee": {
         "name": "Huntington National Bank - Loss Payee",
-        "address": "41 S High St, Columbus, OH 43215",
+        "address": "41 S High St, Brookhaven, OH 43215",
     },
     "additional_insured": {
         "name": "Huntington National Bank",
