@@ -9,7 +9,107 @@ EXTRACTION_PROMPT = """You are an expert insurance policy analyst specializing i
 Carefully read the attached PDF insurance policy and extract ALL relevant information.
 Return ONLY a valid JSON object — no markdown fences, no explanation, just raw JSON.
 
-Use this exact structure (set any missing field to null):
+═══════════════════════════════════════════════════════
+CARRIER FORMAT RECOGNITION
+═══════════════════════════════════════════════════════
+
+First, identify which carrier format this policy uses:
+
+FORMAT A — U.S. Specialty Insurance Company (Public Risk):
+  - Policy number begins with "U" followed by digits (e.g. U23PKG80466-01)
+  - Has a "RENEWAL CERTIFICATE" cover page with "Policy No." label
+  - Property section titled "BUILDING AND PERSONAL PROPERTY COVERAGE FORM - SUPPLEMENTAL DECLARATIONS"
+  - Building + BPP shown as a SINGLE combined line: "Building + Personal Property" with one dollar amount
+  - Flood and Earthquake appear as "ADDITIONAL COVERAGES" with separate deductible/SIR columns
+    labeled "Any One [Flood/Earthquake]" and "Annual Aggregate"
+  - Standard deductible labeled "DEDUCTIBLE / SELF-INSURED RETENTION Applicable to coverages
+    other than Flood or Earthquake"
+  - Agent info on cover page under "AGENT NAME AND ADDRESS"
+  - Policy period on cover page: "POLICY PERIOD: From: [date] To: [date]"
+
+FORMAT B — Travelers (Deluxe Property Coverage Form):
+  - Policy number follows pattern P-630-XXXXXXX-TRV/TCT or H-630-XXXXXXX-TIL (e.g. P-630-0696L948-TRV-17)
+  - Two sub-formats:
+    B1 SPECIFIC LIMITS: Building and BPP listed separately per location/building on schedule "DX 00 03"
+    B2 BLANKET: Single combined limit labeled "Building(s) and Your Business Personal Property"
+       under "COVERAGES AND LIMITS OF INSURANCE - DESCRIBED PREMISES"
+  - Flood labeled "CAUSES OF LOSS - BROAD FORM FLOOD" with "Annual Aggregate Limit" by building range
+  - Earthquake labeled "CAUSES OF LOSS - EARTHQUAKE" with "Annual Aggregate Limit" by building range
+  - Wind/Hail deductible is a PERCENTAGE with a minimum dollar amount per occurrence (varies by state)
+  - Standard deductible labeled "ANY OTHER COVERED LOSS in any one occurrence"
+  - Business Income under "DELUXE BUSINESS INCOME (AND EXTRA EXPENSE) COVERAGE FORM - DESCRIBED PREMISES"
+  - Agent info on Common Policy Declarations page as "NAME AND ADDRESS OF AGENT OR BROKER"
+  - Multiple locations on "LOCATION SCHEDULE" (IL T0 03)
+
+═══════════════════════════════════════════════════════
+EXTRACTION RULES BY FIELD
+═══════════════════════════════════════════════════════
+
+POLICY NUMBER:
+  Format A: Read from "Policy No." on the RENEWAL CERTIFICATE cover page
+  Format B: Read from the Common Policy Declarations page
+
+TOTAL PROPERTY LIMIT (total_property_limit):
+  Format A: The single "Building + Personal Property" combined dollar amount — this IS the total limit
+  Format B B1 (Specific): Sum ALL individual building limits across all locations/buildings, then
+    sum ALL BPP limits across all locations/buildings. Set building_limit to the building total,
+    bpp_limit to the BPP total, and total_property_limit to their combined sum.
+  Format B B2 (Blanket): The single "Building(s) and Your Business Personal Property" blanket
+    amount is the total_property_limit. Set building_limit and bpp_limit both to null.
+
+BLANKET vs SPECIFIC (blanket_or_specific):
+  Format A: "Specific" (combined building+BPP line is still location-specific)
+  Format B B1: "Specific"
+  Format B B2: "Blanket"
+
+STANDARD DEDUCTIBLE (deductible):
+  Format A: The amount under "DEDUCTIBLE / SELF-INSURED RETENTION Applicable to coverages
+    other than Flood or Earthquake"
+  Format B: The amount labeled "ANY OTHER COVERED LOSS in any one occurrence"
+
+WIND/HAIL DEDUCTIBLE (wind_hail_deductible):
+  Format B: Store as "X% (min $Y,YYY)" — e.g. "5% (min $50,000)"
+  Format A: Use the standard deductible if no separate wind deductible is stated
+
+FLOOD LIMIT (flood_limit) and FLOOD DEDUCTIBLE (flood_deductible):
+  Format A: Read from "ADDITIONAL COVERAGES" — flood section. "Any One" column = per-occurrence
+    deductible/SIR; "Annual Aggregate" column = annual aggregate limit. If flood is not listed
+    or shows $0, set flood_limit to "Not Covered" and flood_deductible to null.
+  Format B: "Annual Aggregate Limit" from "CAUSES OF LOSS - BROAD FORM FLOOD" section.
+    If absent, set flood_limit to "Not Covered".
+
+EARTHQUAKE LIMIT and EARTHQUAKE DEDUCTIBLE:
+  Same logic as flood but for earthquake sections.
+
+BUSINESS INCOME LIMIT (bi_limit):
+  Format B: Read from "DELUXE BUSINESS INCOME (AND EXTRA EXPENSE) COVERAGE FORM"
+  Format A: Extract if present, otherwise null
+
+AGENT NAME (agent.name):
+  Format A: From "AGENT NAME AND ADDRESS" on the cover page — extract the agent/agency name only
+  Format B: From "NAME AND ADDRESS OF AGENT OR BROKER" on Common Policy Declarations
+
+NUMBER OF LOCATIONS (num_locations):
+  Count every distinct location listed on the policy (Location Schedule or declarations pages).
+  Store as an integer.
+
+VALUATION METHOD (valuation_method):
+  Look for "Replacement Cost", "Actual Cash Value", or "ACV" anywhere in the declarations.
+  Return "Replacement Cost" or "Actual Cash Value".
+
+COINSURANCE (coinsurance):
+  If a coinsurance percentage appears, return "Yes — X%". If explicitly waived or absent, "No".
+
+SPECIAL FLAGS:
+  - If a field shows "Per Schedule on File" or similar language, store as "See Schedule"
+  - If Flood or Earthquake coverage is absent or $0, store flood_limit / earthquake_limit
+    as "Not Covered" (do not leave null — explicitly populate these fields)
+
+═══════════════════════════════════════════════════════
+JSON OUTPUT STRUCTURE
+═══════════════════════════════════════════════════════
+
+Use this exact structure (set any truly missing field to null):
 
 {
   "named_insured": {
@@ -40,16 +140,22 @@ Use this exact structure (set any missing field to null):
   "coverages": {
     "building_limit": null,
     "bpp_limit": null,
+    "total_property_limit": null,
+    "blanket_or_specific": null,
     "bi_limit": null,
     "extra_expense_limit": null,
     "deductible": null,
     "wind_hail_deductible": null,
-    "flood_coverage": null,
-    "earthquake_coverage": null,
+    "flood_limit": null,
+    "flood_deductible": null,
+    "earthquake_limit": null,
+    "earthquake_deductible": null,
     "coinsurance": null,
     "replacement_cost": null,
+    "valuation_method": null,
     "agreed_value": null,
-    "ordinance_or_law": null
+    "ordinance_or_law": null,
+    "num_locations": null
   },
   "locations": [
     {
@@ -89,13 +195,19 @@ Use this exact structure (set any missing field to null):
   }
 }
 
-Important extraction rules:
-- Format all dollar amounts with $ and commas, e.g. "$1,250,000"
-- Format dates as MM/DD/YYYY
-- Format phone numbers as (XXX) XXX-XXXX
-- For Yes/No fields use "Yes" or "No"
-- Extract every location listed on the policy
-- If a field truly does not appear in the document, leave it null
+═══════════════════════════════════════════════════════
+FORMATTING RULES
+═══════════════════════════════════════════════════════
+- Dollar amounts: use $ with commas, e.g. "$1,250,000"
+- Dates: MM/DD/YYYY
+- Phone numbers: (XXX) XXX-XXXX
+- Yes/No fields: "Yes" or "No"
+- Wind/Hail deductible percentage: "X% (min $Y,YYY)" format
+- Flood/Earthquake not covered: "Not Covered" (never null for these two fields)
+- "Per Schedule on File" language: store as "See Schedule"
+- num_locations: integer (e.g. 3), not a string
+- Extract every location listed on the policy into the locations array
+- If a field truly does not appear anywhere in the document, leave it null
 """
 
 
@@ -112,7 +224,7 @@ class PolicyExtractor:
 
         message = self.client.messages.create(
             model="claude-opus-4-5",
-            max_tokens=4096,
+            max_tokens=8192,
             messages=[
                 {
                     "role": "user",
